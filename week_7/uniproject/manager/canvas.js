@@ -21,6 +21,8 @@ CanvasManager.layerShapeCollection = [];
 // Contains the active shape object
 CanvasManager.shapeReference = null;
 
+// Contains the active tool 
+CanvasManager.activeTool = null;
 
 CanvasManager.process = function(element) {
 
@@ -35,6 +37,11 @@ CanvasManager.push = function(element) {
 CanvasManager.isShapeActive = function() {
     return (this.shapeReference != null);
 };
+
+// 
+CanvasManager.setActiveShape = function(element) {
+    this.shapeReference = element;
+}
 
 CanvasManager.getActiveShape = function() {
     return this.shapeReference;
@@ -66,5 +73,41 @@ CanvasManager.onProcess = function(callback) {
 };
 
 CanvasManager.onFinish = function(callback) {
+
+    var _this = this;
+
     this.canvas.addEventListener('mouseup', callback);
+
+    // this.canvas.addEventListener('mouseleave', function() {
+    //     console.log(_this);
+    //     _this.shapeReference = null;
+    // });
+
+    this.canvas.addEventListener('mouseleave', () => {
+        
+        console.log(this);
+        this.shapeReference = null;
+    });    
+
+};
+
+
+// ***
+CanvasManager.setActiveTool = function(tool) {  
+    this.activeTool = tool;
+};
+
+CanvasManager.getActiveTool = function() {
+    return this.activeTool;
+};
+
+// ***
+CanvasManager.getIntersection = function(x, y) {
+
+    for(var i = 0; i < this.layerShapeCollection.length; i++) {
+
+        if(this.layerShapeCollection[i].isIntersectable(x, y)) {
+            return this.layerShapeCollection[i];
+        }
+    }
 };
